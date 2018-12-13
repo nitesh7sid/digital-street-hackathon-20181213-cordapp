@@ -110,12 +110,16 @@ class ExampleApi(private val rpcOps: CordaRPCOps) {
 
     @PUT
     @Path("issue-land")
-    fun issueLandTitle(@QueryParam("titleID") titleID: String, @QueryParam("owner") ownernName: CordaX500Name): Response {
+    fun issueLandTitle(@QueryParam("titleID") titleID: String, @QueryParam("owner") ownernName: CordaX500Name, @QueryParam("issuer") issuerName: CordaX500Name): Response {
 
         val otherParty = rpcOps.wellKnownPartyFromX500Name(ownernName)
                 ?: return Response.status(BAD_REQUEST).entity("Party named $ownernName cannot be found.\n").build()
 
-        val landTitleState = LandTitleState(titleID, otherParty)
+        val issuer = rpcOps.wellKnownPartyFromX500Name(issuerName)
+                ?: return Response.status(BAD_REQUEST).entity("Party named $ownernName cannot be found.\n").build()
+
+
+        val landTitleState = LandTitleState(titleID, issuer)
         return try {
             val signedTx = rpcOps.startFlow(::LandTitleIssueFlow, landTitleState, otherParty).returnValue.getOrThrow()
             Response.status(CREATED).entity("Transaction id ${signedTx.id} committed to ledger.\n").build()

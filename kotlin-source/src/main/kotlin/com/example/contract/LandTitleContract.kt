@@ -3,14 +3,9 @@ package com.example.contract
 import com.example.state.LandTitleState
 import net.corda.core.contracts.*
 import net.corda.core.identity.AbstractParty
-import net.corda.core.identity.Party
 import net.corda.core.transactions.LedgerTransaction
 import net.corda.core.transactions.TransactionBuilder
-import net.corda.finance.contracts.CommercialPaper
-import net.corda.finance.contracts.asset.Cash
-import net.corda.finance.contracts.asset.OnLedgerAsset
 import java.security.PublicKey
-import java.util.*
 
 class LandTitleContract : Contract {
     companion object {
