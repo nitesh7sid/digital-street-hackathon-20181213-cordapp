@@ -7,7 +7,7 @@ import net.corda.core.contracts.ContractState
 import net.corda.core.contracts.OwnableState
 import net.corda.core.identity.AbstractParty
 import net.corda.core.identity.Party
-import net.corda.finance.contracts.ICommercialPaperState
+
 
 /**
  * The state object recording IOU agreements between two parties.
