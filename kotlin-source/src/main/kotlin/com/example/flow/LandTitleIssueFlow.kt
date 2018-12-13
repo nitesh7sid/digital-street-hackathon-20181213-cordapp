@@ -39,7 +39,7 @@ class LandTitleIssueFlow( val landTitleState: LandTitleState,
 
             tx.addOutputState(landTitleState, LandTitleContract.LAND_TITLE_CONTRACT_ID)
 
-            tx.addCommand(LandTitleContract.Commands.IssueLandTitle(), landTitleState.titleIssuer.owningKey)
+            tx.addCommand(LandTitleContract.Commands.IssueLandTitle(), ourIdentity.owningKey)
 
             // Requesting a time-window to be set, all CP must have a validation window.
             tx.setTimeWindow(Instant.now(), 30.seconds)

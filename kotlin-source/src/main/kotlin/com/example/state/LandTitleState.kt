@@ -19,7 +19,7 @@ import net.corda.core.identity.Party
  * @param borrower the party receiving and approving the IOU.
  */
 data class LandTitleState(val titleID: String,
-                          val titleIssuer: Party, override val owner: AbstractParty,
+                          override val owner: AbstractParty,
                           override val participants: List<AbstractParty> = listOf(owner)): OwnableState {
 
     override fun withNewOwner(newOwner: AbstractParty) = CommandAndState(LandTitleContract.Commands.Move(), copy(owner = newOwner))

@@ -3,10 +3,14 @@ package com.example.contract
 import com.example.state.LandTitleState
 import net.corda.core.contracts.*
 import net.corda.core.identity.AbstractParty
+import net.corda.core.identity.Party
 import net.corda.core.transactions.LedgerTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.finance.contracts.CommercialPaper
+import net.corda.finance.contracts.asset.Cash
+import net.corda.finance.contracts.asset.OnLedgerAsset
 import java.security.PublicKey
+import java.util.*
 
 class LandTitleContract : Contract {
     companion object {
@@ -35,8 +39,8 @@ class LandTitleContract : Contract {
         val time = tx.timeWindow?.untilTime ?: throw IllegalArgumentException("Issuances have a time-window")
         requireThat {
             // Don't allow people to issue commercial paper under other entities identities.
-            "output states are issued by a command signer" using
-                    (output.titleIssuer.owningKey in setOfSigners)
+            //"output states are issued by a command signer" using
+                    //(output.titleIssuer.owningKey in setOfSigners)
             "No input during the issuances" using tx.inputs.isEmpty()
         }
     }

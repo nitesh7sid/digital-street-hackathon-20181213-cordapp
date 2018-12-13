@@ -69,6 +69,11 @@ class ExampleApi(private val rpcOps: CordaRPCOps) {
     @Produces(MediaType.APPLICATION_JSON)
     fun getLandTitles() = rpcOps.vaultQueryBy<LandTitleState>().states
 
+    @GET
+    @Path("cash")
+    @Produces(MediaType.APPLICATION_JSON)
+    fun getCash() = rpcOps.vaultQueryBy<Cash.State>().states
+
     /**
      * Initiates a flow to agree an IOU between two parties.
      *
@@ -105,15 +110,12 @@ class ExampleApi(private val rpcOps: CordaRPCOps) {
 
     @PUT
     @Path("issue-land")
-    fun issueLandTitle(@QueryParam("titleID") titleID: String, @QueryParam("owner") ownernName: CordaX500Name, @QueryParam("issuer") issuerName: CordaX500Name): Response {
+    fun issueLandTitle(@QueryParam("titleID") titleID: String, @QueryParam("owner") ownernName: CordaX500Name): Response {
 
         val otherParty = rpcOps.wellKnownPartyFromX500Name(ownernName)
                 ?: return Response.status(BAD_REQUEST).entity("Party named $ownernName cannot be found.\n").build()
 
-        val issuerParty = rpcOps.wellKnownPartyFromX500Name(issuerName)
-                ?: return Response.status(BAD_REQUEST).entity("Party named $issuerName cannot be found.\n").build()
-
-        val landTitleState = LandTitleState(titleID, issuerParty, otherParty)
+        val landTitleState = LandTitleState(titleID, otherParty)
         return try {
             val signedTx = rpcOps.startFlow(::LandTitleIssueFlow, landTitleState, otherParty).returnValue.getOrThrow()
             Response.status(CREATED).entity("Transaction id ${signedTx.id} committed to ledger.\n").build()
@@ -126,7 +128,7 @@ class ExampleApi(private val rpcOps: CordaRPCOps) {
 
     @PUT
     @Path("transfer-land")
-    fun transferLandTitle(@QueryParam("amount") amount: Int, @QueryParam("owner") buyer: CordaX500Name): Response {
+    fun transferLandTitle(@QueryParam("amount") amount: Int, @QueryParam("buyer") buyer: CordaX500Name): Response {
         val amountData = amount.DOLLARS
         val otherParty = rpcOps.wellKnownPartyFromX500Name(buyer) ?:
         return Response.status(BAD_REQUEST).entity("Party named $buyer cannot be found.\n").build()
