@@ -7,6 +7,7 @@ import net.corda.core.contracts.ContractState
 import net.corda.core.contracts.OwnableState
 import net.corda.core.identity.AbstractParty
 import net.corda.core.identity.Party
+import net.corda.finance.contracts.ICommercialPaperState
 
 /**
  * The state object recording IOU agreements between two parties.
@@ -22,5 +23,7 @@ data class LandTitleState(val titleID: String,
                           override val participants: List<AbstractParty> = listOf(owner)): OwnableState {
 
     override fun withNewOwner(newOwner: AbstractParty) = CommandAndState(LandTitleContract.Commands.Move(), copy(owner = newOwner))
+
+     fun withOwner(newOwner: AbstractParty): LandTitleState = copy(owner = newOwner)
 
 }

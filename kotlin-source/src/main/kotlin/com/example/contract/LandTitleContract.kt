@@ -2,7 +2,10 @@ package com.example.contract
 
 import com.example.state.LandTitleState
 import net.corda.core.contracts.*
+import net.corda.core.identity.AbstractParty
 import net.corda.core.transactions.LedgerTransaction
+import net.corda.core.transactions.TransactionBuilder
+import net.corda.finance.contracts.CommercialPaper
 import java.security.PublicKey
 
 class LandTitleContract : Contract {
@@ -44,6 +47,14 @@ class LandTitleContract : Contract {
         "the state is propagated" using (tx.outputs.size == 1)
     }
 
+    /**
+     * Updates the given partial transaction with an input/output/command to reassign ownership of the paper.
+     */
+    fun generateMove(tx: TransactionBuilder, landTitle: StateAndRef<LandTitleState>, newOwner: AbstractParty) {
+        tx.addInputState(landTitle)
+        tx.addOutputState(landTitle.state.data.withOwner(newOwner), LandTitleContract.LAND_TITLE_CONTRACT_ID)
+        tx.addCommand(LandTitleContract.Commands.Move(), landTitle.state.data.owner.owningKey)
+    }
     /**
      * This contract only implements one command, Create.
      */
